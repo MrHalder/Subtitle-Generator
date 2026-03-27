@@ -586,9 +586,9 @@ body {
 .karaoke-display {
     background: #000;
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    padding: 48px 24px;
+    padding: 40px 32px;
     text-align: center;
-    min-height: 140px;
+    min-height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -596,28 +596,29 @@ body {
 }
 
 .karaoke-text {
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.8rem;
+    font-weight: 800;
     font-style: italic;
-    line-height: 1.4;
+    line-height: 1.3;
     color: var(--text-muted);
-    transition: color var(--transition-fast);
     max-width: 100%;
+    letter-spacing: -0.01em;
 }
 
 .karaoke-word {
     display: inline;
-    color: rgba(255, 255, 255, 0.35);
-    transition: color 0.1s ease-out, text-shadow 0.1s ease-out;
+    color: rgba(255, 255, 255, 0.3);
+    transition: color 0.08s ease-out, text-shadow 0.08s ease-out;
 }
 
 .karaoke-word.spoken {
     color: #fff;
+    text-shadow: none;
 }
 
 .karaoke-word.active {
     color: #facc15;
-    text-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+    text-shadow: 0 0 24px rgba(250, 204, 21, 0.6), 0 0 8px rgba(250, 204, 21, 0.3);
 }
 
 /* Audio Player */
