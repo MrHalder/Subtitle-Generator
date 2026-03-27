@@ -5,7 +5,8 @@ import tempfile
 
 @dataclass(frozen=True)
 class Config:
-    model_name: str = "mlx-community/whisper-large-v3-turbo"
+    model_name: str = "mlx-community/whisper-large-v3-turbo"  # English
+    hinglish_model_name: str = "Oriserve/Whisper-Hindi2Hinglish-Apex"  # Hindi + Hinglish
     temp_dir: Path = Path(tempfile.gettempdir()) / "subtitle_generator"
     output_dir: Path = Path(__file__).parent.parent / "output"
     max_file_size_bytes: int = 2 * 1024 * 1024 * 1024  # 2GB

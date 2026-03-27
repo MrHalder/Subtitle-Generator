@@ -46,9 +46,14 @@ def words_to_segments(words: list[dict], words_per_sub: int = WORDS_PER_SUBTITLE
 def _chunk_to_segment(chunk: list[dict]) -> dict:
     """Convert a chunk of words into a single segment."""
     text = " ".join(w["word"] for w in chunk)
+    start = chunk[0]["start"]
+    end = chunk[-1]["end"]
+    # Ensure end > start (guard against bad timestamps)
+    if end <= start:
+        end = start + 0.1
     return {
-        "start": chunk[0]["start"],
-        "end": chunk[-1]["end"],
+        "start": start,
+        "end": end,
         "text": text,
     }
 

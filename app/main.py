@@ -177,10 +177,8 @@ def _run_transcription(job_id: str, file_path: str, language: str) -> None:
             extract_audio(file_path, wav_path)
             audio_path = wav_path
         else:
-            # Already WAV — copy to persistent location
-            import shutil
-            shutil.copy2(file_path, wav_path)
-            audio_path = wav_path
+            # Already WAV — use in place (file_path is already in temp dir)
+            audio_path = file_path
 
         # Step 2: Transcribe (returns word-level data)
         job_manager.update_progress(job_id, 5, "Starting transcription...", status="transcribing")

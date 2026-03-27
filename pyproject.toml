@@ -8,6 +8,8 @@ dependencies = [
     "uvicorn[standard]>=0.34,<1.0",
     "python-multipart>=0.0.9",
     "mlx-whisper>=0.4",
+    "transformers>=4.40",
+    "accelerate>=0.30",
     "srt>=3.5,<4.0",
 ]
 
