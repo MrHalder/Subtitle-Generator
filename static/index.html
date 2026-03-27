@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtitle Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Animated background mesh -->
+    <div class="bg-mesh"></div>
+
+    <main class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                    <line x1="12" x2="12" y1="19" y2="22"/>
+                </svg>
+                <h1>Subtitle Generator</h1>
+            </div>
+            <p class="subtitle">Generate accurate SRT subtitles from audio & video files</p>
+        </header>
+
+        <!-- Upload Section -->
+        <section id="upload-section" class="glass-card">
+            <div
+                id="dropzone"
+                class="dropzone"
+                role="button"
+                tabindex="0"
+                aria-label="Drop audio or video file here or click to browse"
+            >
+                <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" x2="12" y1="3" y2="15"/>
+                </svg>
+                <h3 class="dropzone-title">Drop your file here</h3>
+                <p class="dropzone-hint">or <span class="accent-text">browse</span> to select</p>
+                <p class="dropzone-formats">WAV, MP3, MP4, MKV, AVI, MOV, WEBM, FLAC, M4A, OGG</p>
+                <input
+                    type="file"
+                    id="file-input"
+                    hidden
+                    accept=".wav,.mp3,.mp4,.mkv,.avi,.mov,.webm,.flac,.m4a,.ogg,.aac,.wma,.flv,.wmv"
+                >
+            </div>
+
+            <!-- File info (shown after selection) -->
+            <div id="file-info" class="file-info hidden">
+                <svg class="file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                </svg>
+                <div class="file-details">
+                    <span id="file-name" class="file-name"></span>
+                    <span id="file-size" class="file-size"></span>
+                </div>
+                <button id="file-remove" class="file-remove" aria-label="Remove file">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" x2="6" y1="6" y2="18"/>
+                        <line x1="6" x2="18" y1="6" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Language Selector -->
+            <div class="language-selector">
+                <label class="language-label">Language</label>
+                <div class="language-pills" role="radiogroup" aria-label="Select language">
+                    <button class="lang-pill active" data-lang="en" role="radio" aria-checked="true">English</button>
+                    <button class="lang-pill" data-lang="hi" role="radio" aria-checked="false">Hindi</button>
+                    <button class="lang-pill" data-lang="hi-en" role="radio" aria-checked="false">Hinglish</button>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button id="generate-btn" class="generate-btn" disabled>
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                Generate Subtitles
+            </button>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress-section" class="glass-card hidden">
+            <h2 class="section-title">Processing</h2>
+
+            <!-- Stage indicators -->
+            <div class="stages">
+                <div class="stage" data-stage="extracting">
+                    <div class="stage-dot"></div>
+                    <span>Extract Audio</span>
+                </div>
+                <div class="stage-line"></div>
+                <div class="stage" data-stage="transcribing">
+                    <div class="stage-dot"></div>
+                    <span>Transcribe</span>
+                </div>
+                <div class="stage-line"></div>
+                <div class="stage" data-stage="formatting">
+                    <div class="stage-dot"></div>
+                    <span>Format SRT</span>
+                </div>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div class="progress-info">
+                    <span id="progress-text" class="progress-text">0%</span>
+                    <span id="progress-stage" class="progress-stage">Starting...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error Section -->
+        <section id="error-section" class="glass-card error-card hidden">
+            <div class="error-header">
+                <svg class="error-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" x2="12" y1="8" y2="12"/>
+                    <line x1="12" x2="12.01" y1="16" y2="16"/>
+                </svg>
+                <h2>Something went wrong</h2>
+            </div>
+            <p id="error-message" class="error-message"></p>
+            <button id="error-retry" class="generate-btn">Try Again</button>
+        </section>
+
+        <!-- Result Section -->
+        <section id="result-section" class="glass-card hidden">
+            <h2 class="section-title">Subtitles Generated</h2>
+
+            <!-- Karaoke Preview -->
+            <div class="karaoke-container">
+                <div class="karaoke-display" id="karaoke-display">
+                    <p id="karaoke-text" class="karaoke-text">Press play to preview</p>
+                </div>
+
+                <!-- Audio Player -->
+                <div class="audio-player" id="audio-player-container">
+                    <button id="play-btn" class="play-btn" aria-label="Play/Pause">
+                        <svg id="play-icon" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                        <svg id="pause-icon" class="hidden" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                            <rect x="6" y="4" width="4" height="16"/>
+                            <rect x="14" y="4" width="4" height="16"/>
+                        </svg>
+                    </button>
+                    <div class="timeline-container" id="timeline-container">
+                        <div class="timeline-bar">
+                            <div id="timeline-progress" class="timeline-progress"></div>
+                        </div>
+                    </div>
+                    <span id="time-display" class="time-display">0:00 / 0:00</span>
+                </div>
+                <audio id="audio-element" preload="auto"></audio>
+            </div>
+
+            <!-- SRT Preview (collapsible) -->
+            <details class="srt-details">
+                <summary class="srt-summary">
+                    <span class="preview-label">SRT Preview</span>
+                    <span id="srt-filename" class="srt-filename"></span>
+                </summary>
+                <pre id="srt-preview" class="srt-preview"><code></code></pre>
+            </details>
+
+            <!-- Download Button -->
+            <div class="result-actions">
+                <button id="download-btn" class="download-btn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" x2="12" y1="15" y2="3"/>
+                    </svg>
+                    Download .srt
+                </button>
+                <button id="new-file-btn" class="new-file-btn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" x2="12" y1="5" y2="19"/>
+                        <line x1="5" x2="19" y1="12" y2="12"/>
+                    </svg>
+                    New File
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

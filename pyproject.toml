@@ -1,0 +1,25 @@
+[project]
+name = "subtitle-generator"
+version = "1.0.0"
+description = "Local web app to generate SRT subtitles from audio/video files using Whisper"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115,<1.0",
+    "uvicorn[standard]>=0.34,<1.0",
+    "python-multipart>=0.0.9",
+    "mlx-whisper>=0.4",
+    "srt>=3.5,<4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "httpx>=0.28",
+    "pytest-asyncio>=0.24",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[project.scripts]
+subtitle-generator = "app.main:start"
